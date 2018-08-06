@@ -100,7 +100,7 @@ export default class DaveApp extends Component<Props> {
 		this.submitForm({ startDate, endDate, bearType, zipcode, numberOfBears, notes })
 			.then(res => {
 				this.setLoadingStatus(false);
-				this.resetForm();
+				this.resetState();
 				console.log('successfully posted data')
 			})
 	}
@@ -139,11 +139,12 @@ export default class DaveApp extends Component<Props> {
 		this.searchBearSightings(searchUrl)
 			.then(sightings => {
 				console.log('sightings = ', sightings);
+				this.resetState();
 				this.setState({ sightings })
 			})
 	}
 
-	resetForm() {
+	resetState() {
 		const state = Object.assign({}, defaultState);
 		this.setState(state);
 	}

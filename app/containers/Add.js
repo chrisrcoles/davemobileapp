@@ -74,7 +74,7 @@ export default class Add extends Component<Props> {
 							<Label>Bear Type</Label>
 							<Input
 								value={this.props.bearType}
-								onChangeText={(val) => this.props.updateValue('bearType', val)}/>
+								onChangeText={(val) => this.props.updateValue('bearType', val.toLowerCase())}/>
 						</Item>
 						<Item stackedLabel last>
 							<Label>Number of Bears</Label>
