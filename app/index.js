@@ -41,7 +41,9 @@ export default class DaveApp extends Component<Props> {
 
 	constructor(props) {
 		super(props);
-		this.state = {};
+		this.state = {
+			activeTab: 'list'
+		};
 		console.log('logging here state =', this.state);
 		this.updateValue = this.updateValue.bind(this);
 		this.onFormSubmit = this.onFormSubmit.bind(this);
@@ -117,15 +119,24 @@ export default class DaveApp extends Component<Props> {
 				</Content>
 				<Footer>
 					<FooterTab>
-						<Button onPress={() => this.setActiveTab('list')} vertical >
+						<Button
+							onPress={() => this.setActiveTab('list')}
+							active={this.state.activeTab==='list'}
+							vertical>
 							<Icon name="list" />
 							<Text>List</Text>
 						</Button>
-						<Button onPress={() => this.setActiveTab('search')} vertical>
+						<Button
+							onPress={() => this.setActiveTab('search')}
+							active={this.state.activeTab==='search'}
+							vertical>
 							<Icon name="search" />
 							<Text>Search</Text>
 						</Button>
-						<Button onPress={() => this.setActiveTab('add')} vertical>
+						<Button
+							onPress={() => this.setActiveTab('add')}
+							active={this.state.activeTab==='add'}
+							vertical>
 							<Icon active name="add" />
 							<Text>New</Text>
 						</Button>
