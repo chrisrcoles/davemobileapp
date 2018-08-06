@@ -20,6 +20,12 @@ import List from './containers/List';
 type Props = {};
 const defaultState = {
 	activeTab: 'add',
+	startDate: null,
+	endDate: null,
+	zipcode: '',
+	bearType: '',
+	numberOfBears: '',
+	notes: '',
 	sightings: [],
 	loading: false,
 	validForm: true
@@ -74,9 +80,9 @@ export default class DaveApp extends Component<Props> {
 	onFormSubmit(e) {
 		const { startDate, endDate, bearType, zipcode, numberOfBears, notes } = this.state;
 
-		if (!startDate || !endDate || !bearType || !zipcode || !numberOfBears || !notes) {
+		if (!startDate || !endDate || !bearType || !zipcode || !numberOfBears || !notes || Number.isInteger(numberOfBears)) {
 			this.setState({ validForm: false });
-			console.log('Invalid form here show alert')
+			console.log('Invalid form here show alert');
 			return
 		}
 
@@ -92,7 +98,10 @@ export default class DaveApp extends Component<Props> {
 	}
 
 	resetForm() {
-		this.setState(defaultState)
+		console.log('state before = ', this.state)
+		const state = Object.assign({}, defaultState);
+		this.setState(state)
+		console.log('state after = ', this.state)
 	}
 
 	async submitForm({ startDate, endDate, bearType, zipcode, numberOfBears, notes }) {
@@ -133,6 +142,12 @@ export default class DaveApp extends Component<Props> {
 			case 'add':
 				return (
 					<Add
+						startDate={this.state.startDate}
+						endDate={this.state.endDate}
+						zipcode={this.state.zipcode}
+						bearType={this.state.bearType}
+						numberOfBears={this.state.numberOfBears}
+						notes={this.state.notes}
 						updateValue={this.updateValue}
 						onFormSubmit={this.onFormSubmit}
 						validForm={this.state.validForm}/>)
