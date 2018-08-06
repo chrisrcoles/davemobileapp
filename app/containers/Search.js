@@ -80,7 +80,7 @@ export default class Search extends Component<Props> {
 						</Body>
 					</ListItem>
 				</Form>
-				<Button transparent block>
+				<Button onPress={() => this.props.handleSeeSearchResultsPress()} transparent block>
 					<Text>See {this.props.sightings.length} Sightings </Text>
 				</Button>
 				<Button onPress={() => this.props.onSearchFormSubmit()} block>

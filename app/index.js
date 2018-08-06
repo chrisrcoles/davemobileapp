@@ -46,6 +46,7 @@ export default class DaveApp extends Component<Props> {
 		this.onSearchFormSubmit = this.onSearchFormSubmit.bind(this);
 		this.onCheckboxPress = this.onCheckboxPress.bind(this);
 		this.buildSearchQuery = this.buildSearchQuery.bind(this);
+		this.handleSeeSearchResultsPress = this.handleSeeSearchResultsPress.bind(this);
 	}
 
 	componentDidMount() {
@@ -175,10 +176,12 @@ export default class DaveApp extends Component<Props> {
 
 	setActiveTab(activeTab) {
 		this.setState({ activeTab });
+	}
 
-		if (activeTab === 'list') {
-			this.fetchList()
-		}
+	handleSeeSearchResultsPress() {
+		console.log('handleSeeSearchResultsPress()')
+		this.setActiveTab('list')
+		this.renderPageContent('list')
 	}
 
 	buildSearchQuery(property, value) {
@@ -192,8 +195,8 @@ export default class DaveApp extends Component<Props> {
 		this.buildSearchQuery('sort', 'num_bears')
 	}
 
-	renderPageContent() {
-		switch (this.state.activeTab) {
+	renderPageContent(page) {
+		switch (page || this.state.activeTab) {
 			case 'add':
 				return (
 					<Add
@@ -216,6 +219,7 @@ export default class DaveApp extends Component<Props> {
 				return (
 					<Search
 						sightings={this.state.sightings}
+						handleSeeSearchResultsPress={this.handleSeeSearchResultsPress}
 						onSearchFormSubmit={this.onSearchFormSubmit}
 						onCheckboxPress={this.onCheckboxPress}
 						sortByNumBears={this.state.sortByNumBears}
