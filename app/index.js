@@ -20,8 +20,8 @@ import List from './containers/List';
 type Props = {};
 const defaultState = {
 	activeTab: 'add',
-	startDate: null,
-	endDate: null,
+	startDate: undefined,
+	endDate: undefined,
 	zipcode: '',
 	bearType: '',
 	numberOfBears: '',
