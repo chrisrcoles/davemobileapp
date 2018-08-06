@@ -5,13 +5,11 @@
  * @format
  * @flow
  */
-
 import React, { Component, View } from 'react';
 
 import {
 	Container,
 	Header,
-	Text
 } from 'native-base';
 import Add from './containers/Add';
 import AppFooter from './components/AppFooter';
@@ -28,7 +26,7 @@ const defaultState = {
 	numberOfBears: '',
 	notes: '',
 	sightings: [],
-	searchUrl: 'http://127.0.0.1:3000/api/v1/sightings/search?',
+	searchUrl: `${DOMAIN}/sightings/search?`,
 	loading: false,
 	validForm: true,
 	sortByNumBears: false,
@@ -58,14 +56,13 @@ export default class DaveApp extends Component<Props> {
 		this.fetchBearSightings()
 			.then(sightings => {
 				this.setLoadingStatus(false);
-				console.log('sightings = ', sightings)
 				this.setState({ sightings })
 			})
 	}
 
 	async fetchBearSightings() {
 		try {
-			let response = await fetch(`http://127.0.0.1:3000/api/v1/sightings/search`, { method: 'GET' })
+			let response = await fetch(`${DOMAIN}/sightings/search`, { method: 'GET' })
 			let json = await response.json();
 			return json;
 		} catch (error) {
@@ -78,8 +75,6 @@ export default class DaveApp extends Component<Props> {
 	}
 
 	updateValue(val, data) {
-		console.log('val = ,', val)
-		console.log('data = ,', data)
 		let state = {};
 		state[val] = data;
 		this.setState(state)
@@ -89,8 +84,7 @@ export default class DaveApp extends Component<Props> {
 		const { startDate, endDate, bearType, zipcode, numberOfBears, notes } = this.state;
 
 		if (!startDate || !endDate || !bearType || !zipcode || !numberOfBears || !notes || Number.isInteger(numberOfBears)) {
-			this.setState({ validForm: false });
-			console.log('Invalid form here show alert');
+			this.setState({ validForm: false }); // alert is shown
 			return
 		}
 
@@ -101,12 +95,10 @@ export default class DaveApp extends Component<Props> {
 			.then(res => {
 				this.setLoadingStatus(false);
 				this.resetState();
-				console.log('successfully posted data')
 			})
 	}
 
 	async searchBearSightings(url) {
-		console.log('searchBearSightings() with url = ', url)
 		try {
 			let response = await fetch(url, { method: 'GET' });
 			let json = await response.json();
@@ -119,6 +111,7 @@ export default class DaveApp extends Component<Props> {
 	onSearchFormSubmit() {
 		let query;
 		let searchUrl = this.state.searchUrl;
+		const lastChar = searchUrl[searchUrl.length - 1];
 
 		for (query in this.state.queries) {
 			if (Object.keys(this.state.queries).length > 1) {
@@ -128,17 +121,12 @@ export default class DaveApp extends Component<Props> {
 			}
 		}
 
-		const lastChar = searchUrl[searchUrl.length - 1];
-
 		if (lastChar === '&') {
 			searchUrl = searchUrl.substring(0, searchUrl.length - 1);
 		}
 
-		console.log('search URL = ', searchUrl)
-
 		this.searchBearSightings(searchUrl)
 			.then(sightings => {
-				console.log('sightings = ', sightings);
 				this.resetState();
 				this.setState({ sightings })
 			})
@@ -153,7 +141,7 @@ export default class DaveApp extends Component<Props> {
 		const num_bears = parseInt(numberOfBears);
 
 		try {
-			let response = await fetch(`http://127.0.0.1:3000/api/v1/sightings`, {
+			let response = await fetch(`${DOMAIN}/sightings`, {
 				method: 'POST',
 				headers: {
 					Accept: 'application/json',
@@ -180,9 +168,8 @@ export default class DaveApp extends Component<Props> {
 	}
 
 	handleSeeSearchResultsPress() {
-		console.log('handleSeeSearchResultsPress()')
-		this.setActiveTab('list')
-		this.renderPageContent('list')
+		this.setActiveTab('list');
+		this.renderPageContent('list');
 	}
 
 	buildSearchQuery(property, value) {
@@ -229,7 +216,6 @@ export default class DaveApp extends Component<Props> {
 	}
 
 	render() {
-
 		return (
 			<Container>
 				<Header />
