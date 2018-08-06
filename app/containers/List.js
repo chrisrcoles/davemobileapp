@@ -7,12 +7,10 @@ export default class List extends Component {
 	}
 
 	renderCardList(sightings) {
-		console.log('renderCardList')
-
 		if (!sightings.length) {
 			return (
 				<Container><Text>No Sightings</Text></Container>
-		)
+			)
 		}
 
 		return sightings.map(d => {
@@ -27,7 +25,7 @@ export default class List extends Component {
 						</Body>
 					</CardItem>
 					<CardItem footer>
-						<Text>{d.zipcode}.</Text>
+						<Text>{d.zipcode}</Text>
 					</CardItem>
 				</Card>
 			)

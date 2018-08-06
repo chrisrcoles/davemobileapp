@@ -4,6 +4,7 @@
  * @flow
  */
 import React, { Component } from 'react';
+import { Alert } from 'react-native';
 
 import {
 	Container,
@@ -24,10 +25,24 @@ export default class Add extends Component<Props> {
 		super(props)
 	}
 
+	invalidFormAlert () {
+		Alert.alert(
+			'Form Invalid',
+			'All inputs must be complete. ',
+			[
+				{text: 'OK', onPress: () => console.log('OK Pressed')},
+			],
+			{ cancelable: true }
+		)
+	}
+
 	render() {
+
+
 		return (
 			<Container>
 				<Content>
+					{!this.props.validForm ? this.invalidFormAlert() : null}
 					<Form>
 						<Item stackedLabel>
 							<Label>Start Date</Label>
@@ -59,9 +74,11 @@ export default class Add extends Component<Props> {
 							<Label>Number of Bears</Label>
 							<Input onChangeText={(val) => this.props.updateValue('numberOfBears', val)}/>
 						</Item>
-						<Textarea rowSpan={5} placeholder="Notes" />
+						<Textarea
+							onChangeText={(val) => this.props.updateValue('notes', val)}
+							rowSpan={5} placeholder="Notes" />
 					</Form>
-					<Button onPress={this.props.onFormSubmit} block>
+					<Button onPress={() => this.props.onFormSubmit()} block>
 						<Text>Submit</Text>
 					</Button>
 				</Content>
