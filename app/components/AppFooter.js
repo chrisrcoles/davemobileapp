@@ -1,6 +1,14 @@
+/**
+ *
+ * @format
+ * @flow
+ */
 import React, { Component } from 'react';
 
 import { Container, Header, Content, Footer, FooterTab, Button, Icon, Text } from 'native-base';
+
+type Props = {};
+
 export default class AppFooter extends Component<Props> {
 	render() {
 		return (
