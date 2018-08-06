@@ -12,20 +12,10 @@ import { StyleSheet } from 'react-native';
 import {
 	Container,
 	Header,
-	Content,
-	Form,
-	Footer,
-	FooterTab,
-	Button,
-	Icon,
-	Input,
-	Item,
-	Text,
-	Textarea,
-	Label,
-	DatePicker
+	Text
 } from 'native-base';
 import Add from './containers/Add';
+import AppFooter from './components/AppFooter';
 
 type Props = {};
 
@@ -44,7 +34,6 @@ export default class DaveApp extends Component<Props> {
 		this.state = {
 			activeTab: 'list'
 		};
-		console.log('logging here state =', this.state);
 		this.updateValue = this.updateValue.bind(this);
 		this.onFormSubmit = this.onFormSubmit.bind(this);
 		this.setActiveTab = this.setActiveTab.bind(this);
@@ -52,10 +41,6 @@ export default class DaveApp extends Component<Props> {
 
 
 	updateValue(val, data) {
-		console.log('update VAL before =', this.state);
-		console.log('VAL = ', val);
-		console.log('DATA = ', data);
-
 		let state = {};
 		state[val] = data;
 		this.setState(state)
@@ -71,77 +56,30 @@ export default class DaveApp extends Component<Props> {
 		this.setState({ activeTab })
 	}
 
-	render() {
-		const { activeTab } = this.state;
+	renderPageContent() {
 
+		switch (this.state.activeTab) {
+			case 'add':
+				return (<Add updateValue={this.updateValue} onFormSubmit={this.onFormSubmit}/>)
+
+			case 'list':
+				return (<Container><Text>List</Text></Container>)
+
+			case 'search':
+				return (<Container><Text>Search</Text></Container>)
+		}
+	}
+
+
+	render() {
 		return (
 			<Container>
 				<Header />
-				<Content>
-					<Form>
-						<Item stackedLabel>
-							<Label>Start Date</Label>
-							<DatePicker
-								locale={"en"}
-								modalTransparent={false}
-								animationType={"fade"}
-								placeHolderText=" "
-								onDateChange={(val) => this.updateValue('startDate', val)}
-							/>
-						</Item>
-						<Item stackedLabel>
-							<Label>End Date</Label>
-							<DatePicker
-								locale={"en"}
-								modalTransparent={false}
-								animationType={"fade"}
-								placeHolderText=" "
-								onDateChange={(val) => this.updateValue('endDate', val)}
-							/>
-						</Item>
-						<Item stackedLabel>
-							<Label>Zipcode</Label>
-							<Input onChangeText={(val) => this.updateValue('zipcode', val)}/>
-						</Item>
-						<Item stackedLabel>
-							<Label>Bear Type</Label>
-							<Input onChangeText={(val) => this.updateValue('bearType', val)}/>
-						</Item>
-						<Item stackedLabel last>
-							<Label>Number of Bears</Label>
-							<Input onChangeText={(val) => this.updateValue('numberOfBears', val)}/>
-						</Item>
-						<Textarea rowSpan={5} placeholder="Notes" />
-					</Form>
-					<Button onPress={this.onFormSubmit} block>
-						<Text>Submit</Text>
-					</Button>
-				</Content>
-				<Footer>
-					<FooterTab>
-						<Button
-							onPress={() => this.setActiveTab('list')}
-							active={this.state.activeTab==='list'}
-							vertical>
-							<Icon name="list" />
-							<Text>List</Text>
-						</Button>
-						<Button
-							onPress={() => this.setActiveTab('search')}
-							active={this.state.activeTab==='search'}
-							vertical>
-							<Icon name="search" />
-							<Text>Search</Text>
-						</Button>
-						<Button
-							onPress={() => this.setActiveTab('add')}
-							active={this.state.activeTab==='add'}
-							vertical>
-							<Icon active name="add" />
-							<Text>New</Text>
-						</Button>
-					</FooterTab>
-				</Footer>
+				{this.renderPageContent()}
+				<AppFooter
+					setActiveTab={this.setActiveTab}
+					activeTab={this.state.activeTab}
+					/>
 			</Container>
 	);
 	}
