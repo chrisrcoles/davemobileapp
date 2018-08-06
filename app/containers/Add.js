@@ -87,7 +87,7 @@ export default class Add extends Component<Props> {
 							value={this.props.notes}
 							rowSpan={5} placeholder="Notes" />
 					</Form>
-					<Button onPress={() => this.props.onFormSubmit()} block>
+					<Button onPress={() => this.props.onAddFormSubmit()} block>
 						<Text>Submit</Text>
 					</Button>
 				</Content>

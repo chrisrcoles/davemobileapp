@@ -5,7 +5,14 @@
  */
 import React, { Component } from 'react';
 
-import { Container, Header, Content, Footer, FooterTab, Button, Icon, Text } from 'native-base';
+import {
+	Badge,
+	Footer,
+	FooterTab,
+	Button,
+	Icon,
+	Text
+} from 'native-base';
 
 type Props = {};
 
@@ -22,17 +29,22 @@ export default class AppFooter extends Component<Props> {
 						onPress={() => this.props.setActiveTab('list')}
 						active={this.props.activeTab==='list'}
 						vertical>
+
+						<Badge primary vertical style={ { alignSelf: 'center', top: 25, left: 20} }>
+							<Text>{this.props.numberOfSightings}</Text>
+						</Badge>
+
 						<Icon name="list" />
 						<Text>List</Text>
 					</Button>
-					<Button
+					<Button style={ { top: 5 } }
 						onPress={() => this.props.setActiveTab('search')}
 						active={this.props.activeTab==='search'}
 						vertical>
 						<Icon name="search" />
 						<Text>Search</Text>
 					</Button>
-					<Button
+					<Button style={ { top: 5 } }
 						onPress={() => this.props.setActiveTab('add')}
 						active={this.props.activeTab==='add'}
 						vertical>

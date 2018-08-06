@@ -16,10 +16,11 @@ import {
 import Add from './containers/Add';
 import AppFooter from './components/AppFooter';
 import List from './containers/List';
+import Search from './containers/Search';
 
 type Props = {};
 const defaultState = {
-	activeTab: 'add',
+	activeTab: 'search',
 	startDate: undefined,
 	endDate: undefined,
 	zipcode: '',
@@ -27,8 +28,11 @@ const defaultState = {
 	numberOfBears: '',
 	notes: '',
 	sightings: [],
+	searchUrl: 'http://127.0.0.1:3000/api/v1/sightings/search?',
 	loading: false,
-	validForm: true
+	validForm: true,
+	sortByNumBears: false,
+	queries: {}
 };
 
 export default class DaveApp extends Component<Props> {
@@ -37,8 +41,11 @@ export default class DaveApp extends Component<Props> {
 		super(props);
 		this.state = defaultState;
 		this.updateValue = this.updateValue.bind(this);
-		this.onFormSubmit = this.onFormSubmit.bind(this);
+		this.onAddFormSubmit = this.onAddFormSubmit.bind(this);
 		this.setActiveTab = this.setActiveTab.bind(this);
+		this.onSearchFormSubmit = this.onSearchFormSubmit.bind(this);
+		this.onCheckboxPress = this.onCheckboxPress.bind(this);
+		this.buildSearchQuery = this.buildSearchQuery.bind(this);
 	}
 
 	componentDidMount() {
@@ -77,7 +84,7 @@ export default class DaveApp extends Component<Props> {
 		this.setState(state)
 	}
 
-	onFormSubmit(e) {
+	onAddFormSubmit() {
 		const { startDate, endDate, bearType, zipcode, numberOfBears, notes } = this.state;
 
 		if (!startDate || !endDate || !bearType || !zipcode || !numberOfBears || !notes || Number.isInteger(numberOfBears)) {
@@ -97,15 +104,52 @@ export default class DaveApp extends Component<Props> {
 			})
 	}
 
+	async searchBearSightings(url) {
+		console.log('searchBearSightings() with url = ', url)
+		try {
+			let response = await fetch(url, { method: 'GET' });
+			let json = await response.json();
+			return json;
+		} catch (error) {
+			console.log('found error from API ', error)
+		}
+	}
+
+	onSearchFormSubmit() {
+		let query;
+		let searchUrl = this.state.searchUrl;
+
+		for (query in this.state.queries) {
+			if (Object.keys(this.state.queries).length > 1) {
+				searchUrl += `${query}=${this.state.queries[query]}&`
+			} else {
+				searchUrl += `${query}=${this.state.queries[query]}`
+			}
+		}
+
+		const lastChar = searchUrl[searchUrl.length - 1];
+
+		if (lastChar === '&') {
+			searchUrl = searchUrl.substring(0, searchUrl.length - 1);
+		}
+
+		console.log('search URL = ', searchUrl)
+
+		this.searchBearSightings(searchUrl)
+			.then(sightings => {
+				console.log('sightings = ', sightings);
+				this.setState({ sightings })
+			})
+	}
+
 	resetForm() {
-		console.log('state before = ', this.state)
 		const state = Object.assign({}, defaultState);
-		this.setState(state)
-		console.log('state after = ', this.state)
+		this.setState(state);
 	}
 
 	async submitForm({ startDate, endDate, bearType, zipcode, numberOfBears, notes }) {
-		const bears = parseInt(numberOfBears)
+		const num_bears = parseInt(numberOfBears);
+
 		try {
 			let response = await fetch(`http://127.0.0.1:3000/api/v1/sightings`, {
 				method: 'POST',
@@ -118,7 +162,7 @@ export default class DaveApp extends Component<Props> {
 					end_date: endDate,
 					bear_type: bearType,
 					zipcode,
-					num_bears: bears,
+					num_bears,
 					notes
 				})
 			});
@@ -137,6 +181,17 @@ export default class DaveApp extends Component<Props> {
 		}
 	}
 
+	buildSearchQuery(property, value) {
+		let queries = this.state.queries;
+		queries[property] = value;
+		this.setState({ queries });
+	}
+
+	onCheckboxPress () {
+		this.setState({ sortByNumBears: !this.state.sortByNumBears});
+		this.buildSearchQuery('sort', 'num_bears')
+	}
+
 	renderPageContent() {
 		switch (this.state.activeTab) {
 			case 'add':
@@ -149,14 +204,22 @@ export default class DaveApp extends Component<Props> {
 						numberOfBears={this.state.numberOfBears}
 						notes={this.state.notes}
 						updateValue={this.updateValue}
-						onFormSubmit={this.onFormSubmit}
+						onAddFormSubmit={this.onAddFormSubmit}
 						validForm={this.state.validForm}/>)
 
 			case 'list':
-				return (<List sightings={this.state.sightings}/>)
+				return (
+					<List
+						sightings={this.state.sightings}/>)
 
 			case 'search':
-				return (<Container><Text>Search</Text></Container>)
+				return (
+					<Search
+						sightings={this.state.sightings}
+						onSearchFormSubmit={this.onSearchFormSubmit}
+						onCheckboxPress={this.onCheckboxPress}
+						sortByNumBears={this.state.sortByNumBears}
+						buildSearchQuery={this.buildSearchQuery}/>)
 		}
 	}
 
@@ -167,6 +230,7 @@ export default class DaveApp extends Component<Props> {
 				<Header />
 				{this.renderPageContent()}
 				<AppFooter
+					numberOfSightings={this.state.sightings.length}
 					setActiveTab={this.setActiveTab}
 					activeTab={this.state.activeTab}/>
 			</Container>
